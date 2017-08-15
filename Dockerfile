@@ -22,7 +22,7 @@ RUN apk add --no-cache --virtual .build-deps \
 # set to an non-zero value to enable privoxy http proxy.
 ENV PORT          0
 
-ENV SS_PORT       10800
+ENV SS_PORT       8000
 ENV SS_LOCAL_PORT 1080
 ENV SS_PASSWORD   123456
 ENV SS_METHOD     chacha20
