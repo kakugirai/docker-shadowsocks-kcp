@@ -2,20 +2,21 @@
 
 FROM alpine:latest
 
-ENV SS_VER 3.0.8
+ENV SS_VER 3.1.0
 ENV SS_URL https://github.com/shadowsocks/shadowsocks-libev/releases/download/v$SS_VER/shadowsocks-libev-$SS_VER.tar.gz
 ENV SS_DIR shadowsocks-libev-$SS_VER
 
-ENV KCP_VER 20170525
+ENV KCP_VER 20170904
 ENV KCP_URL https://github.com/xtaci/kcptun/releases/download/v$KCP_VER/kcptun-linux-amd64-$KCP_VER.tar.gz
 
 RUN apk add --no-cache --virtual .build-deps \
-      autoconf build-base libtool linux-headers xmlto asciidoc curl \
-      libev-dev libsodium-dev pcre-dev mbedtls-dev udns-dev openssl-dev \
+      autoconf build-base libtool linux-headers xmlto asciidoc curl grep \
+      libev-dev libsodium-dev pcre-dev mbedtls-dev c-ares-dev openssl-dev \
     && curl -sSL $SS_URL | tar xz \
     && cd $SS_DIR && ./configure && make install && cd .. && rm -rf $SS_DIR \
     && apk add --no-cache --virtual .run-deps \
-      libev libsodium pcre mbedtls udns privoxy \
+      $(ldd /usr/local/bin/ss-server | cut -d ' ' -f 3 | xargs -n1 apk info --who-owns | cut -d' ' -f5 | rev | cut -d- -f3- | rev | xargs) \
+      privoxy \
     && mkdir -p /opt/kcptun && cd /opt/kcptun && curl -sSL $KCP_URL | tar xz \
     && apk del .build-deps
 

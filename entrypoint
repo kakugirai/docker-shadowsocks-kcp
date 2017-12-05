@@ -40,6 +40,7 @@ SSS_EXEC=$SSS_EXEC" -s $SS_SERVER -p $SS_PORT -k $SS_PASSWORD -m $SS_METHOD -t $
 $KCP && echo "Start:" $KCP_EXEC && $KCP_EXEC&
 echo "Start:" $SSS_EXEC && $SSS_EXEC&
 
+# socks5 -> http
 if [[ $PORT != 0 && $CLIENT == true ]]; then
 	sed -i "/^\s*listen-address/c\listen-address 0.0.0.0:$PORT" /etc/privoxy/config
 	echo forward-socks5 / 127.0.0.1:$SS_LOCAL_PORT . >> /etc/privoxy/config
